@@ -8,6 +8,48 @@ namespace ConsoleApp15
 {
     class Program
     {
+    static bool povezani(List<int> lista, int n, bool[] posecen)
+        {
+            if (posecen[n]) return false;
+            posecen[n] = true;
+            foreach (int i in lista[n])
+            {
+                povezani(lista, i, posecen);
+                return true;
+            }
+        }
+        static int brojkomponenti(List<int>[] lista)
+        {
+            int br = 0;
+            bool[] posecen = new bool[lista.Length];
+            for (int i = 0; i < lista.Length; i++)
+            {
+                if (povezani(lista, i, posecen)) br++;
+            }
+            return br;
+        }
+        static int Komponente(List<int>[] lista, int n, bool[] posecen)
+        {
+            if (posecen[n]) return 0;
+            posecen[n] = true;
+            int br = 1;
+            foreach (int i in lista[n])
+            {
+                br += Komponente(lista, n, posecen);
+            }
+            return br;
+        }
+        static int brojkomponenti(List<int>[] lista)
+        {
+            int maks = 0;
+            bool[] posecen = new bool[lista.Length];
+            for (int i = 0; i < lista.Length; i++)
+            {
+                int x = Komponente(lista, i, posecen);
+                if (maks < x) maks = x;
+            }
+            return maks;
+        }
         static void unos (int n,int m,List<int> [] lista)
         {
             for (int i = 0; i < n; i++)

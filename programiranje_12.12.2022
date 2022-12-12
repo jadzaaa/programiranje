@@ -1,0 +1,249 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApplication26
+{
+    class Program
+    {
+        // sledeci put kad budes radio unos ostavi indexe da idu od 0(5 cvorova - 0,1,2,3,4)
+        static bool povezani(List<int>[] lista, int n, bool[] posecen)
+        {
+            if (posecen[n]) return false;
+            posecen[n] = true;
+            foreach (int i in lista[n])
+            {
+                povezani(lista, i, posecen);
+                
+            }
+            return true;
+            
+        }
+        static int brojkomponenti(List<int>[] lista)
+        {
+            int br = 0;
+            bool[] posecen = new bool[lista.Length];
+            for (int i = 0; i < lista.Length; i++)
+            {
+                if (povezani(lista, i, posecen)) br++;
+            }
+            return br;
+        }
+        static int Komponente(List<int>[] lista, int n, bool[] posecen)
+        {
+            if (posecen[n]) return 0;
+            posecen[n] = true;
+            int br = 1;
+            foreach (int i in lista[n])
+            {
+                br += Komponente(lista, n, posecen);
+            }
+            return br;
+        }
+        static int najvecibroj(List<int>[] lista)
+        {
+            int maks = 0;
+            bool[] posecen = new bool[lista.Length];
+            for (int i = 0; i < lista.Length; i++)
+            {
+                int x = Komponente(lista, i, posecen);
+                if (maks < x) maks = x;
+            }
+            return maks;
+        }
+        static void unos(int n, int m, List<int>[] lista)
+        {
+            for (int i = 1; i < n; i++)
+            {
+                lista[i] = new List<int>();
+            }
+            for (int i = 0; i < m; i++)
+            {
+                Console.WriteLine("Uneti vezu");
+                int a = int.Parse(Console.ReadLine());
+                int b = int.Parse(Console.ReadLine());
+                lista[a].Add(b);
+            }
+        }
+        static void ispis(int n, List<int>[] lista)
+        {
+            for (int i = 1; i < n; i++)
+            {
+                Console.WriteLine("cvor " + i + " je u povezan sa sledecim cvorovima:");
+                foreach (int x in lista[i])
+                {
+                    Console.WriteLine(x);
+                }
+
+
+            }
+        }
+        static bool udubinu(int r1, int r2, List<int>[] lista)
+        {
+            if (r1 == r2) return true;
+            foreach (int p in lista[r1])
+            {
+                if (udubinu(p, r2, lista)) return true;
+            }
+            return false;
+
+
+        }
+        static bool udubinu2(int r1, int r2, List<int>[] lista, bool[] posecen)
+        {
+            if (r1 == r2) return true;
+            if (posecen[r1]) return false;
+            posecen[r1] = true;
+            foreach (int p in lista[r1])
+            {
+                if (udubinu2(p, r2, lista, posecen)) return true;
+            }
+            return false;
+        }
+        static bool udubinustek(int r1, int r2, List<int>[] lista)
+        {
+            Stack<int> stek = new Stack<int>();
+            bool[] posecen = new bool[lista.Length];
+            bool postoji = false;
+            stek.Push(r1);
+            while (stek.Count > 0 && !postoji)
+            {
+                int p = stek.Pop();
+                foreach (int i in lista[p])
+                {
+                    if (i == r2)
+                    {
+                        postoji = true;
+                        break;
+                    }
+                    if (!posecen[i])
+                    {
+                        posecen[i] = true;
+                        stek.Push(i);
+                    }
+                }
+            }
+            return postoji;
+        }
+        static bool usirinu(int r1, int r2, List<int>[] lista)
+        {
+            Queue<int> red = new Queue<int>();
+            bool[] posecen = new bool[lista.Length];
+            bool postoji = false;
+            red.Enqueue(r1);
+            while (red.Count > 0 && !postoji)
+            {
+                int p = red.Dequeue();
+                foreach (int i in lista[p])
+                {
+                    if (i == r2)
+                    {
+                        postoji = true;
+                        break;
+                    }
+                    if (!posecen[i])
+                    {
+                        posecen[i] = true;
+                        red.Enqueue(i);
+                    }
+                }
+
+            }
+            return postoji;
+        }
+        static void unosmatrica(int m, bool[,] matrica)
+        {
+            for (int i = 0; i < m; i++)
+            {
+                Console.WriteLine("Unesite vezu");
+                int a = int.Parse(Console.ReadLine());
+                int b = int.Parse(Console.ReadLine());
+                matrica[a, b] = true;
+                matrica[b, a] = true;
+            }
+        }
+        static void ispismatrica(int n, bool[,] matrica)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    Console.WriteLine(matrica[i, j]);
+                }
+            }
+        }
+        static void Stepen(int n, int[] stepen, List<int>[] lista)
+        {
+            for (int i = 1; i < n; i++)
+            {
+                foreach (int x in lista[i]) stepen[x]++;
+            }
+        }
+        static void ispisstepena(int n, int[] stepen)
+        {
+            for (int i = 1; i < n; i++)
+            {
+                Console.WriteLine(stepen[i]);
+            }
+        }
+        static void kanov(int n, int m, List<int>[] lista, int[] stepen)// ove je funkcija koju sam sam pravio i verovatno ne radi koristi topsort
+        {
+            Queue<int> red = new Queue<int>();
+            for (int i = 1; i < n; i++)
+            {
+                if (stepen[i] == 0) red.Enqueue(i);
+            }
+            int y = 0;
+            foreach (int i in red)
+            {
+                if (y > i) y = i;
+            }
+
+            while (y == 0)
+            {
+                int x = red.Dequeue();
+                Console.WriteLine(x);
+                foreach (int k in lista[x])
+                {
+                    stepen[k]--;
+                    if (stepen[k] == 0) red.Enqueue(k);
+                }
+            }
+        }
+        static void topsort(List<int> [] lista,int [] stepen)
+        {
+            Queue<int> cvorovistepena0=new Queue<int> ();
+            for(int cvor=0;cvor<stepen.Length;cvor++)
+            {
+                if(stepen[cvor]==0) cvorovistepena0.Enqueue (cvor);
+            }
+            while(cvorovistepena0.Count  >0)
+            {
+                int cvor=cvorovistepena0.Dequeue();
+                Console.WriteLine(cvor);
+                foreach(int predak in lista[cvor])
+                {
+                    if(--stepen[predak]==0) cvorovistepena0 .Enqueue(predak);
+                }
+            }
+        }
+            static void Main(string[] args)
+        {
+            Console.WriteLine("unesite broj cvorova i broj veza ");
+            int n = int.Parse(Console.ReadLine());
+            int m = int.Parse(Console.ReadLine());
+            n++;
+            int []stepen= new int[n]; 
+            List<int>[] lista = new List<int>[n];
+            unos(n, m, lista);
+            ispis(n, lista);
+            if (udubinustek(1, 3, lista)) Console.WriteLine("povezani su");
+            else Console.WriteLine("nisu povezani");
+            Stepen(n, stepen, lista);
+            ispisstepena(n, stepen);
+            Console.ReadKey();
+        }
+    }
+}

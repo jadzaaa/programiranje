@@ -8,15 +8,16 @@ namespace ConsoleApp15
 {
     class Program
     {
-    static bool povezani(List<int> lista, int n, bool[] posecen)
+    static bool povezani(List<int>[] lista, int n, bool[] posecen)
         {
             if (posecen[n]) return false;
             posecen[n] = true;
             foreach (int i in lista[n])
             {
                 povezani(lista, i, posecen);
-                return true;
+                
             }
+            return true;
         }
         static int brojkomponenti(List<int>[] lista)
         {

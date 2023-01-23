@@ -1,0 +1,140 @@
+class Program//primov algoritam za retki
+    {
+        const double INF = double.PositiveInfinity;
+        struct par
+        {
+            public int cvor;
+            public double duzina;
+            public par(int x,double y)
+            {
+            this.cvor=x;
+                this.duzina=y;
+            }
+            static void Main(string[] args)
+            {
+
+                Console.WriteLine("uneti broj cvorova i broj veza");
+                int n = int.Parse(Console.ReadLine());
+                int m = int.Parse(Console.ReadLine());
+                List<par>[] susedi = new List<par>[n];
+                for (int i = 0; i < n; i++)
+                {
+                    susedi[i] = new List<par>();
+                }
+                for (int i = 0; i < m; i++)
+                {
+                    Console.WriteLine("uneti cvorove i duzinu veze");
+                    int cvorod = int.Parse(Console.ReadLine());
+                    int cvordo = int.Parse(Console.ReadLine());
+                    int duzina = int.Parse(Console.ReadLine());
+                    susedi[cvorod].Add(new par(cvordo, duzina));
+                    susedi[cvordo].Add(new par(cvorod, duzina));
+                }
+                double ukupnaDuzina = 0.0;
+                double[] rastojanje = Enumerable.Repeat(INF, n).ToArray();
+                bool[] resen = new bool[n];
+                rastojanje[0] = 0.0;
+                int cvorovaUStablu = 0;
+                while (cvorovaUStablu < n)
+                {
+                    int cvorMin = 0;
+                    double minRastojanje = INF;
+                    for (int cvor = 0; cvor < n; cvor++)
+                    {
+                        if (!resen[cvor] && rastojanje[cvor] < minRastojanje)
+                        {
+                            cvorMin = cvor;
+                            minRastojanje = rastojanje[cvor];
+                        }
+                    }
+                    Console.WriteLine("ukljucujem cvorMin u stablo " + cvorMin);
+                    resen[cvorMin] = true;
+                    cvorovaUStablu++;
+                    ukupnaDuzina += minRastojanje;
+                    rastojanje[cvorMin] = 0.0;
+                    foreach (par p in susedi[cvorMin])
+                    {
+                        if (p.duzina < rastojanje[p.cvor]) rastojanje[p.cvor] = p.duzina;
+                    }
+                    Console.WriteLine(ukupnaDuzina.ToString("0.00"));
+                    Console.ReadLine();
+                }
+            }
+                
+        }
+    }
+    
+    
+    class Program//mozda primov algoritam za gusti
+    {
+        const double INF = double.PositiveInfinity;
+        static double svinajkraciputevi(double [,] D ,int n)
+        {
+            bool [] resen= new bool [n];
+            double[,] minD=(double[,])D.Clone();
+            double d=0;
+            int res=0;
+            resen[0]=true;
+            int cvor=0;
+            int br=0;
+            while(br<n)
+            {
+                for(int i=0;i<n;i++)
+                {
+                    minD[res,i]=INF;
+                }
+                 double MinCvor=double.MaxValue;
+                    for(int i =0;i<n;i++)
+                    {
+                        if(!resen[i]&&(MinCvor>minD[i,res]));
+                        {
+                            MinCvor=minD[i,res];
+                            cvor=i;
+                        }
+                    }
+                for(int i=0;i<n;i++)
+                {
+                     if((resen[i])&&(MinCvor>minD[cvor,i]));
+                        {
+                            MinCvor=minD[cvor,i];
+                        }
+                }
+            Console.WriteLine("br: {0} mincvor: {1}",br,MinCvor);
+                d+=MinCvor;
+                resen[cvor]=true;
+                res=cvor;
+                br++;
+            }
+            return d;
+        }
+                
+            static void Main(string[] args)
+            {
+
+                Console.WriteLine("uneti broj cvorova i broj veza");
+                int n = int.Parse(Console.ReadLine());
+                int m = int.Parse(Console.ReadLine());
+                double[,] D = new double[n, n];
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        D[i, j] = INF;
+                    }
+                }
+                    
+                
+                for (int i = 0; i < m; i++)
+                {
+                    Console.WriteLine("uneti cvorove i duzinu veze");
+                    int cvorod = int.Parse(Console.ReadLine());
+                    int cvordo = int.Parse(Console.ReadLine());
+                    int duzina = int.Parse(Console.ReadLine());
+                    D[cvorod, cvordo] = duzina;
+                    D[cvordo, cvorod] = duzina;
+                }
+                
+                    Console.WriteLine("msp se sastoji od \n {0}",svinajkraciputevi(D,n));
+                    Console.ReadLine();
+                }
+     }

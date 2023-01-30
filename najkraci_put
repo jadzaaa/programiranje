@@ -1,0 +1,129 @@
+
+struct par
+        {
+            public int kraj;
+            public double duzina;
+            public par(int k, double d)
+            {
+                kraj = k;
+                duzina = d;
+            }
+        }
+        static double najkraci_put(List<par>[] susedi, int pocetak, int kraj, bool[] posecen, par[] tabela)
+        {
+            double minDuzina = tabela[pocetak].duzina;
+            par sledeci_cvor = new par(-1, double.PositiveInfinity);
+            int br = 0;
+            while (br < tabela.Length)
+            {
+                par p1, p2;
+                foreach (var x in susedi[pocetak])
+                {
+                    if ((!posecen[x.kraj]) && (minDuzina + x.duzina < tabela[x.kraj].duzina))
+                    {
+                        p1.duzina = minDuzina + x.duzina;
+                        p1.kraj = pocetak;
+                        tabela[x.kraj] = p1;
+                    }
+                    if ((!posecen[x.kraj]) && (tabela[x.kraj].duzina < sledeci_cvor.duzina))
+                    {
+                        p2.duzina = tabela[x.kraj].duzina;
+                        p2.kraj = x.kraj;
+                        sledeci_cvor = p2;
+                    }
+                }
+                posecen[pocetak] = true;
+                pocetak = sledeci_cvor.kraj;
+                minDuzina = sledeci_cvor.duzina;
+                sledeci_cvor.duzina = double.PositiveInfinity;
+                br++;
+            }
+            return tabela[kraj].duzina;
+        }
+        static double najkraci_put1(double[,] matrica, int pocetak, int kraj, bool[] posecen, par[] tabela)
+        {
+            double minDuzina = tabela[pocetak].duzina;
+            par sledeci_cvor = new par(-1, double.PositiveInfinity);
+            int br = 0;
+            while (br < tabela.Length)
+            {
+                par p1, p2;
+                for (int i = 0; i < matrica.GetLength(0); i++)
+                {
+                    if (matrica[pocetak, i] != 0)
+                    {
+                        if ((!posecen[i]) && (minDuzina + matrica[pocetak, i] < tabela[i].duzina))
+                        {
+                            p1.duzina = minDuzina + matrica[pocetak, i];
+                            p1.kraj = pocetak;
+                            tabela[i] = p1;
+                        }
+                        if ((!posecen[i]) && (tabela[i].duzina < sledeci_cvor.duzina))
+                        {
+                            p2.duzina = tabela[i].duzina;
+                            p2.kraj = i;
+                            sledeci_cvor = p2;
+                        }
+                    }
+                }
+                posecen[pocetak] = true;
+                pocetak = sledeci_cvor.kraj;
+                minDuzina = sledeci_cvor.duzina;
+                sledeci_cvor.duzina = double.PositiveInfinity;
+                br++;
+            }
+            return tabela[kraj].duzina;
+        }
+
+
+                   
+        static void Main(string[] args)
+        {
+            const double INF = double.PositiveInfinity;
+            Console.WriteLine("uneti broj cvorova grafa");
+            int n = int.Parse(Console.ReadLine());
+            par[] tabela = new par[n];
+            double[,] matrica = new double[n, n];
+            List<par>[] susedi = new List<par>[n];
+            for (int i = 0; i < n; i++)
+            {
+                susedi[i] = new List<par>();
+                tabela[i] = new par(-1, double.PositiveInfinity);
+            }
+            Console.WriteLine("uneti broj grana");
+            int m = int.Parse(Console.ReadLine());
+            for (int i = 0; i < m; i++)
+            {
+                Console.WriteLine("uneti cvor od , cvor do i njihovu udaljenost");
+                string[] str = Console.ReadLine().Split();
+                int cvorOd = int.Parse(str[0]);
+                int cvorDo = int.Parse(str[1]);
+                double duzina = double.Parse(str[2]);
+                matrica[cvorDo, cvorOd] = duzina;
+                matrica[cvorOd, cvorDo] = duzina;
+                susedi[cvorOd].Add(new par(cvorDo, duzina));
+                susedi[cvorDo].Add(new par(cvorOd, duzina));
+            }
+            Console.WriteLine("uneti startni i ciljni cvor");
+            int start = int.Parse(Console.ReadLine());
+            int kraj = int.Parse(Console.ReadLine());
+            par pom = new par(-1, 0);
+            tabela[start] = pom;
+            bool[] posecen = new bool[n];
+            double duz = najkraci_put1(matrica, start, kraj, posecen, tabela);
+            if (duz < INF)
+            {
+                Console.WriteLine(najkraci_put1(matrica, start, kraj, posecen, tabela));
+                string put = "";
+                while (kraj != -1)
+                {
+                    put = put.Insert(0, kraj.ToString() + " ");
+                    kraj = tabela[kraj].kraj;
+                }
+                Console.WriteLine(put);
+            }
+            else Console.WriteLine("cvorovi nisu povezani");
+            Console.ReadKey();
+        }
+    
+

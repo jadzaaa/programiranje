@@ -38,7 +38,7 @@ namespace ConsoleApplication26
             int br = 1;
             foreach (int i in lista[n])
             {
-                br += Komponente(lista, n, posecen);
+                br += Komponente(lista, i, posecen);
             }
             return br;
         }

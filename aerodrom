@@ -1,0 +1,47 @@
+class Program
+    {
+        static int brPresedanja = int.MaxValue;
+        static void DFS(Dictionary<string, List<string>> aerodromi, string aerodrom, string kraj, List<string> posecen, int brojac)
+        {
+            if (aerodrom == kraj)
+            {
+                brPresedanja = brojac;
+                return;
+            }
+            if (posecen.Contains(aerodrom)) return;
+            posecen.Add(aerodrom);
+            foreach (string noviAerodrom in aerodromi[aerodrom])
+            {
+                DFS(aerodromi, noviAerodrom, kraj, kopija(posecen), brojac + 1);
+            }
+        }
+       static List<string> kopija(List<string> a)
+        {
+            List<string> b = new List<string>();
+            foreach (string s in a) b.Add(s);
+            return b;
+        }
+        static void Main(string[] args)
+        {
+            int n =int.Parse( Console.ReadLine());
+            Dictionary<string, List<string>> aerodromi = new Dictionary<string, List<string>>();
+            for (int i = 0; i < n; i++)
+            {
+                Console.WriteLine("let");
+                string[] str = Console.ReadLine().Split();
+                if (!aerodromi.ContainsKey(str[0])) aerodromi.Add(str[0],new List<string>());
+                if (!aerodromi.ContainsKey(str[1])) aerodromi.Add(str[1],new List<string>());
+                aerodromi[str[0]].Add(str[1]);
+            }
+            Console.WriteLine("start i kraj");
+            string start = Console.ReadLine();
+            string kraj = Console.ReadLine();
+            DFS(aerodromi, start, kraj, new List<string>(), 0);
+            Console.WriteLine(brPresedanja);
+
+
+
+            Console.ReadKey();
+
+        }
+    }

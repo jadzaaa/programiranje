@@ -1,0 +1,36 @@
+int m = 5;
+           
+            
+            int[] niz = Enumerable.Range(10, 10).ToArray();
+            int[] niz1 = Enumerable.Range(11, 10).ToArray();
+            List<int> lista = Enumerable.Repeat(10, 10).ToList();
+            ispis(niz);
+            ispis(niz1);
+            ispis1(lista);
+            int[] niz2 = new int[m];
+            unos(niz2);
+            int mini = niz2.Min();
+            int maksi = niz2.Max();
+            double prosek = niz2.Average();
+            int suma = niz2.Sum();
+
+            int broj = niz2.Count(x => x > 5 && x < 10);
+            Console.WriteLine("broj elemenata vecih od 5 a manjih od 10 je" + broj);
+            Console.WriteLine("mini je {0} ,maksi je {1} suma je {2},prosek je {3}", mini, maksi, suma, prosek);
+            int proizvod = niz2.Aggregate((x, y) => x * y);
+            Console.WriteLine("proizvod je" + proizvod);
+            int zbir_parnih = niz2.Aggregate((x, y) => (y % 2 == 0 ? x + y : x));
+            int br_parnih=niz2.Aggregate((x,y)=>(y%2==0?x+1:x));
+            Console.WriteLine("broj parnih je {0} a zbir {1}",br_parnih,zbir_parnih);
+            var lista1 = niz2.Select(x => x * x).ToList();
+            ispis1(lista1);
+            var pozitivni = niz2.Where(x => x > 0);
+            if (niz2.Contains(4)) Console.WriteLine("niz sadrzi 4");
+            if (niz2.All(x => x > 0)) Console.WriteLine("svi elementi su pozitivni");
+            else if (niz2.Any(x => x > 0)) Console.WriteLine("postoji pozitivni element");
+            else Console.WriteLine("ne postoji");
+            int[] prvaTri = niz2.Take(3).ToArray();
+            int[] bezPrvaTri = niz2.Skip(3).ToArray();
+            foreach (var x in prvaTri) Console.WriteLine("prva tri " + x);
+            foreach (var x in bezPrvaTri) Console.WriteLine("bez prva tri " + x);
+            Console.ReadKey();
